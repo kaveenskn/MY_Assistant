@@ -1,24 +1,44 @@
-import Chatbot from './components/chatbot'
-import Navbar from './components/Navbar'
-import Profile from './components/Profile'
+import { useState } from 'react';
+import ProfileSetup from './components/ProfileSetup';
+import PublicProfile from './components/PublicProfile';
 
 function App() {
-  return (
-    <div className="min-h-screen bg-slate-950 text-slate-100">
-      <Navbar />
+  const [currentView, setCurrentView] = useState<'setup' | 'profile'>('setup');
+  const [profileData, setProfileData] = useState<{
+    profileImage: string | null;
+    name: string;
+    title: string;
+    bio: string;
+  } | null>(null);
 
-      <main className="mx-auto max-w-screen-2xl px-4 sm:px-6 py-5">
-        <div className="mt-4 flex flex-col lg:flex-row lg:items-stretch lg:justify-center gap-8 lg:gap-10">
-          <div className="w-full lg:w-[30%]">
-            <Profile />
-          </div>
-          <div className="w-full lg:w-[50%]">
-            <Chatbot />
-          </div>
-        </div>
-      </main>
+  const handleGenerateValues = (data: {
+    cvFile: File | null;
+    profileImage: string | null;
+    name: string;
+    title: string;
+    bio: string;
+  }) => {
+    // In a real app, this is where we'd send the file to the backend
+    setProfileData({
+      profileImage: data.profileImage,
+      name: data.name,
+      title: data.title,
+      bio: data.bio
+    });
+    setCurrentView('profile');
+  };
+
+  return (
+    <div className="font-sans antialiased text-white bg-black-rich min-h-screen">
+      {currentView === 'setup' && (
+        <ProfileSetup onGenerate={handleGenerateValues} />
+      )}
+
+      {currentView === 'profile' && profileData && (
+        <PublicProfile data={profileData} />
+      )}
     </div>
-  )
+  );
 }
 
-export default App
+export default App;

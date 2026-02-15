@@ -1,115 +1,129 @@
-import { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react';
 
-const Chatbot = () => {
-	const [message, setMessage] = useState('')
+interface Message {
+	id: string;
+	text: string;
+	sender: 'user' | 'bot';
+	timestamp: Date;
+}
 
-	const onSubmit = (e: React.FormEvent) => {
-		e.preventDefault()
-	}
+const Chatbot: React.FC = () => {
+	const [messages, setMessages] = useState<Message[]>([
+		{
+			id: '1',
+			text: "Hello! I'm your AI Assistant. I can answer questions about my professional background, skills, and experience based on the uploaded CV. How can I help you?",
+			sender: 'bot',
+			timestamp: new Date()
+		}
+	]);
+	const [input, setInput] = useState('');
+	const [isTyping, setIsTyping] = useState(false);
+	const messagesEndRef = useRef<HTMLDivElement>(null);
+
+	const scrollToBottom = () => {
+		messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+	};
+
+	useEffect(() => {
+		scrollToBottom();
+	}, [messages]);
+
+	const handleSend = (e: React.FormEvent) => {
+		e.preventDefault();
+		if (!input.trim()) return;
+
+		const userMsg: Message = {
+			id: Date.now().toString(),
+			text: input,
+			sender: 'user',
+			timestamp: new Date()
+		};
+		setMessages(prev => [...prev, userMsg]);
+		setInput('');
+		setIsTyping(true);
+
+		// Mock AI response
+		setTimeout(() => {
+			const botResponses = [
+				"Based on the CV, I have extensive experience in full-stack development, particularly with React and Node.js.",
+				"I have led multiple high-impact projects, increasing system efficiency by 40%.",
+				"My technical skillset includes JavaScript, Python, AWS, and Docker.",
+				"I am available for interviews. You can contact me via the email listed in the profile.",
+				"Great question! I specialize in building scalable web applications with a focus on user experience."
+			];
+			const randomResponse = botResponses[Math.floor(Math.random() * botResponses.length)];
+
+			const botMsg: Message = {
+				id: (Date.now() + 1).toString(),
+				text: randomResponse,
+				sender: 'bot',
+				timestamp: new Date()
+			};
+			setMessages(prev => [...prev, botMsg]);
+			setIsTyping(false);
+		}, 1500);
+	};
 
 	return (
-		<section className="w-full min-h-[min(560px,calc(100vh-140px))] bg-slate-900 rounded-2xl shadow-sm border border-slate-800 overflow-hidden flex flex-col">
-			<div className="p-4 flex items-center gap-4 border-b border-slate-800">
-					<div className="h-14 w-14 rounded-2xl bg-sky-500 text-white flex items-center justify-center">
-						<svg
-							width="26"
-							height="26"
-							viewBox="0 0 24 24"
-							fill="none"
-							xmlns="http://www.w3.org/2000/svg"
+		<div className="flex flex-col h-full bg-black/40 backdrop-blur-md rounded-2xl border border-white/5 overflow-hidden shadow-2xl">
+			{/* Header */}
+			<div className="p-4 border-b border-white/10 bg-black/60 flex items-center gap-3">
+				<div className="w-3 h-3 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)] animate-pulse"></div>
+				<span className="font-heading font-medium text-gold tracking-wide">AI Assistant</span>
+			</div>
+
+			{/* Messages */}
+			<div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
+				{messages.map((msg) => (
+					<div
+						key={msg.id}
+						className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+					>
+						<div
+							className={`max-w-[80%] px-4 py-3 rounded-2xl text-sm leading-relaxed ${msg.sender === 'user'
+									? 'bg-gold/20 text-white border border-gold/30 rounded-tr-none'
+									: 'bg-white/5 text-gray-200 border border-white/10 rounded-tl-none'
+								}`}
 						>
-							<path
-								d="M12 3c3.5 0 6 2.6 6 6v2c0 3.4-2.5 6-6 6s-6-2.6-6-6V9c0-3.4 2.5-6 6-6Z"
-								stroke="currentColor"
-								strokeWidth="2"
-								strokeLinejoin="round"
-							/>
-							<path
-								d="M9 10h.01M15 10h.01"
-								stroke="currentColor"
-								strokeWidth="3"
-								strokeLinecap="round"
-							/>
-							<path
-								d="M9 14h6"
-								stroke="currentColor"
-								strokeWidth="2"
-								strokeLinecap="round"
-							/>
-							<path
-								d="M8 20h8"
-								stroke="currentColor"
-								strokeWidth="2"
-								strokeLinecap="round"
-							/>
-						</svg>
-					</div>
-
-					<div className="flex-1">
-						<div className="flex items-center gap-2">
-							<h1 className="text-lg font-semibold text-slate-100">Personal AI Assistant</h1>
-							<span className="text-sky-500 text-lg leading-none">✧</span>
+							{msg.text}
 						</div>
-						<p className="text-slate-400">Always here to help</p>
 					</div>
+				))}
+				{isTyping && (
+					<div className="flex justify-start">
+						<div className="bg-white/5 px-4 py-3 rounded-2xl rounded-tl-none border border-white/10 flex items-center gap-1">
+							<span className="w-1.5 h-1.5 bg-gold/50 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
+							<span className="w-1.5 h-1.5 bg-gold/50 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
+							<span className="w-1.5 h-1.5 bg-gold/50 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
+						</div>
+					</div>
+				)}
+				<div ref={messagesEndRef} />
 			</div>
 
-				<div className="flex-1 bg-slate-900">
-				<div className="p-4">
-						<div className="max-w-2xl bg-slate-800 rounded-2xl p-5 text-slate-100">
-						<p>
-							Hello! I&apos;m your Personal AI Assistant. I can help you with questions about your
-							profile, resume, and more. How can I assist you today?
-						</p>
-							<p className="mt-4 text-sm text-slate-400">06:58 PM</p>
-					</div>
-				</div>
-			</div>
-
-				<div className="p-4 bg-slate-900">
-				<form onSubmit={onSubmit} className="flex items-center gap-4">
+			{/* Input */}
+			<form onSubmit={handleSend} className="p-4 border-t border-white/10 bg-black/60">
+				<div className="flex gap-2">
 					<input
-						value={message}
-						onChange={(e) => setMessage(e.target.value)}
-						placeholder="Type your message..."
-							className="flex-1 h-14 rounded-xl border border-slate-700 bg-slate-950 px-4 text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-400/30"
+						type="text"
+						value={input}
+						onChange={(e) => setInput(e.target.value)}
+						placeholder="Ask about skills, experience..."
+						className="flex-1 bg-black-rich border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-gold/50 transition-colors"
 					/>
 					<button
 						type="submit"
-						aria-label="Send message"
-							className="h-14 w-14 rounded-xl bg-sky-500 text-white flex items-center justify-center"
+						disabled={!input.trim()}
+						className="bg-gold text-black-rich p-3 rounded-xl hover:bg-gold-light disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
 					>
-						<svg
-							width="22"
-							height="22"
-							viewBox="0 0 24 24"
-							fill="none"
-							xmlns="http://www.w3.org/2000/svg"
-						>
-							<path
-								d="M22 2 11 13"
-								stroke="currentColor"
-								strokeWidth="2"
-								strokeLinecap="round"
-								strokeLinejoin="round"
-							/>
-							<path
-								d="M22 2 15 22l-4-9-9-4 20-7Z"
-								stroke="currentColor"
-								strokeWidth="2"
-								strokeLinecap="round"
-								strokeLinejoin="round"
-							/>
+						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+							<path d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z" />
 						</svg>
 					</button>
-				</form>
+				</div>
+			</form>
+		</div>
+	);
+};
 
-				<p className="mt-3 text-center text-sm text-slate-400">
-					Press Enter to send • Powered by AI
-				</p>
-			</div>
-		</section>
-	)
-}
-
-export default Chatbot
+export default Chatbot;
