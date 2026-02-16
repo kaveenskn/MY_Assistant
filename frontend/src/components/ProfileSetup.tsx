@@ -11,13 +11,12 @@ interface ProfileSetupProps {
     }) => void;
 }
 
-
 const ProfileSetup: React.FC<ProfileSetupProps> = ({ onGenerate }) => {
     return (
         <div className="h-[100dvh] flex items-center justify-center p-4 sm:p-6 bg-[url('https://images.unsplash.com/photo-1634128221889-82ed6efebfc3?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center relative overflow-hidden">
             <div className="absolute inset-0 bg-black-rich/90"></div>
 
-            <div className="z-10 w-full max-w-md max-h-[calc(100dvh-2rem)] sm:max-h-[calc(100dvh-3rem)] overflow-y-auto">
+            <div className="z-10 w-full max-w-md">
                 <CVUpload onGenerate={onGenerate} />
             </div>
         </div>
