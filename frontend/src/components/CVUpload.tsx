@@ -6,6 +6,7 @@ interface CVUploadProps {
         profileImage: string | null;
         name: string;
         title: string;
+        degree: string;
         bio: string;
     }) => void;
 }
@@ -19,6 +20,7 @@ const CVUpload: React.FC<CVUploadProps> = ({ onGenerate }) => {
     // Additional fields for the profile since we aren't actually parsing the CV in this frontend-only demo
     const [name, setName] = useState('');
     const [title, setTitle] = useState('');
+    const [degree, setDegree] = useState('');
     const [bio, setBio] = useState('');
 
     const handleCvChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -42,7 +44,7 @@ const CVUpload: React.FC<CVUploadProps> = ({ onGenerate }) => {
         e.preventDefault();
         // In a real app, we would upload the CV here and extract data.
         // For this demo, we pass the manually entered data + files.
-        onGenerate({ cvFile, profileImage, name, title, bio });
+        onGenerate({ cvFile, profileImage, name, title, degree, bio });
     };
 
     return (
@@ -84,6 +86,17 @@ const CVUpload: React.FC<CVUploadProps> = ({ onGenerate }) => {
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                             placeholder="Ex. John Doe"
+                            className="w-full bg-black-rich border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-gold transition-colors"
+                            required
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-[10px] font-semibold text-gold mb-0.5 uppercase tracking-wider">Degree</label>
+                        <input
+                            type="text"
+                            value={degree}
+                            onChange={(e) => setDegree(e.target.value)}
+                            placeholder="Ex. MSc in Computer Science"
                             className="w-full bg-black-rich border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-gold transition-colors"
                             required
                         />

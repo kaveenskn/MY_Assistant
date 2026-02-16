@@ -1,42 +1,18 @@
-import { useState } from 'react';
-import ProfileSetup from './components/ProfileSetup';
-import PublicProfile from './components/PublicProfile';
+import Assistant from './components/Assistant';
+
+// Placeholder data - CUSTOMIZE THIS FOR YOUR OWN PROFILE
+const USER_PROFILE = {
+  profileImage: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=2544&auto=format&fit=crop', // Professional placeholder
+  name: 'Alex Morgan',
+  title: 'Senior Solutions Architect',
+  degree: 'MSc Artificial Intelligence',
+  bio: 'Passionate about leveraging AI to solve complex business problems. With over 8 years of experience in full-stack development and cloud architecture, I specialize in building scalable, intelligent systems that drive innovation.',
+};
 
 function App() {
-  const [currentView, setCurrentView] = useState<'setup' | 'profile'>('setup');
-  const [profileData, setProfileData] = useState<{
-    profileImage: string | null;
-    name: string;
-    title: string;
-    bio: string;
-  } | null>(null);
-
-  const handleGenerateValues = (data: {
-    cvFile: File | null;
-    profileImage: string | null;
-    name: string;
-    title: string;
-    bio: string;
-  }) => {
-    // In a real app, this is where we'd send the file to the backend
-    setProfileData({
-      profileImage: data.profileImage,
-      name: data.name,
-      title: data.title,
-      bio: data.bio
-    });
-    setCurrentView('profile');
-  };
-
   return (
     <div className="font-sans antialiased text-white bg-black-rich min-h-screen">
-      {currentView === 'setup' && (
-        <ProfileSetup onGenerate={handleGenerateValues} />
-      )}
-
-      {currentView === 'profile' && profileData && (
-        <PublicProfile data={profileData} />
-      )}
+      <Assistant data={USER_PROFILE} />
     </div>
   );
 }

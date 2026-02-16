@@ -67,9 +67,11 @@ const Chatbot: React.FC = () => {
 	return (
 		<div className="flex flex-col h-full bg-black/40 backdrop-blur-md rounded-2xl border border-white/5 overflow-hidden shadow-2xl">
 			{/* Header */}
-			<div className="p-4 border-b border-white/10 bg-black/60 flex items-center gap-3">
-				<div className="w-3 h-3 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)] animate-pulse"></div>
-				<span className="font-heading font-medium text-gold tracking-wide">AI Assistant</span>
+			<div className="p-4 border-b border-white/10 bg-black/60 flex items-center justify-between">
+				<div className="flex items-center gap-3">
+					<div className="w-3 h-3 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)] animate-pulse"></div>
+					<span className="font-heading font-medium text-gold tracking-wide">AI Assistant Interaction</span>
+				</div>
 			</div>
 
 			{/* Messages */}
@@ -81,8 +83,8 @@ const Chatbot: React.FC = () => {
 					>
 						<div
 							className={`max-w-[80%] px-4 py-3 rounded-2xl text-sm leading-relaxed ${msg.sender === 'user'
-									? 'bg-gold/20 text-white border border-gold/30 rounded-tr-none'
-									: 'bg-white/5 text-gray-200 border border-white/10 rounded-tl-none'
+								? 'bg-gold/20 text-white border border-gold/30 rounded-tr-none'
+								: 'bg-white/5 text-gray-200 border border-white/10 rounded-tl-none'
 								}`}
 						>
 							{msg.text}
